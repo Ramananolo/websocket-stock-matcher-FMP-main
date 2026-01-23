@@ -1,17 +1,44 @@
+import { matchingConfig } from "./cache.js";
+
 export function computeScore({ price, prevClose, week, month, pe }) {
   let score = 0;
 
-  // Critère Intraday : plus forte baisse aujourd'hui (>10%)
-  if (prevClose && price && ((price - prevClose) / prevClose) <= -0.10) score++;
+  // Conversion % → ratio
+  const intradayLimit = matchingConfig.intradayDrop / 100;
+  const weekLimit = matchingConfig.weekDrop / 100;
+  const monthLimit = matchingConfig.monthDrop / 100;
 
-  // Critère semaine : baisse >10% sur 5 jours
-  if (week && price && ((price - week) / week) <= -0.10) score++;
+  // Critère Intraday
+  if (
+    prevClose &&
+    price &&
+    ((price - prevClose) / prevClose) <= intradayLimit
+  ) {
+    score++;
+  }
 
-  // Critère mois : baisse >10% sur 21 jours
-  if (month && price && ((price - month) / month) <= -0.10) score++;
+  // Critère semaine
+  if (
+    week &&
+    price &&
+    ((price - week) / week) <= weekLimit
+  ) {
+    score++;
+  }
 
-  // Critère P/E < 14
-  if (pe && pe < 14) score++;
+  // Critère mois
+  if (
+    month &&
+    price &&
+    ((price - month) / month) <= monthLimit
+  ) {
+    score++;
+  }
+
+  // Critère P/E
+  if (pe && pe <= matchingConfig.peMax) {
+    score++;
+  }
 
   return score;
 }
