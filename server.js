@@ -73,7 +73,7 @@ initCache();
 setInterval(async () => {
   await fetchAndUpdateData();
   broadcast(wss);
-}, process.env.POLL_INTERVAL || 5000);
+}, process.env.POLL_INTERVAL || 1000);
 
 // ==========================
 // START SERVER
