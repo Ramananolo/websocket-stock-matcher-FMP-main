@@ -25,30 +25,23 @@ app.get('/api/matching-config', (req, res) => {
 });
 
 // Mettre à jour la config depuis le front
-app.post('/api/matching-config', (req, res) => {
+app.post('/api/matching-config', async (req, res) => {
   const { intradayDrop, weekDrop, monthDrop, peMax } = req.body;
-
-  if (
-    typeof intradayDrop !== 'number' ||
-    typeof weekDrop !== 'number' ||
-    typeof monthDrop !== 'number' ||
-    typeof peMax !== 'number'
-  ) {
-    return res.status(400).json({ message: 'Invalid configuration' });
-  }
 
   matchingConfig.intradayDrop = intradayDrop;
   matchingConfig.weekDrop = weekDrop;
   matchingConfig.monthDrop = monthDrop;
   matchingConfig.peMax = peMax;
 
-  console.log('⚡ Matching config updated from front-end:', matchingConfig);
+  console.log('⚡ Matching config updated:', matchingConfig);
 
-  // Mettre à jour également le filtre PE dans cache
-  cache.filters.peMax = peMax;
+  // 🔥 RECALCUL IMMEDIAT
+  await fetchAndUpdateData();
+  broadcast(wss);
 
-  res.json({ message: 'Configuration updated', matchingConfig });
+  res.json({ message: 'Configuration updated & broadcasted', matchingConfig });
 });
+
 
 // ==========================
 // WEBSOCKET POUR FRONT-END
