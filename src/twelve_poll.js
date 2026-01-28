@@ -10,7 +10,7 @@ const SYMBOLS = [...SYMBOLS_US, ...SYMBOLS_FR];
 export async function fetchAndUpdateData() {
   for (const symbol of SYMBOLS) {
     try {
-      const market = SYMBOLS_US.includes(symbol) ? "US" : "FR";
+      const market = SYMBOLS_US.includes(symbol) ? "US" : "UE";
 
       // 1️⃣ Prix temps réel
       const url = `${process.env.TWELVE_REST_URL}/time_series?symbol=${symbol}&interval=1min&outputsize=2&apikey=${process.env.TWELVE_KEY}`;

@@ -18,7 +18,7 @@ export function broadcast(wss) {
     }))
 
 
-    .sort((a, b) => b.score - a.score || a.intraday - b.intraday); // score puis pire variation
+    .sort((a, b) => b.score - a.score || a.intraday - b.intraday); 
 
 
   const packet = JSON.stringify({ event: "scan", payload: rows });
