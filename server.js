@@ -7,6 +7,7 @@ import cors from 'cors';
 import { cache, initCache, matchingConfig } from './src/cache.js';
 import { fetchAndUpdateData } from './src/twelve_poll.js';
 import { broadcast } from './src/broadcaster.js';
+import { recalculateAllScores } from "./src/recalculate.js";
 
 const app = express();
 app.use(cors());
@@ -25,7 +26,7 @@ app.get('/api/matching-config', (req, res) => {
 });
 
 // Mettre à jour la config depuis le front
-app.post('/api/matching-config', async (req, res) => {
+app.post("/api/matching-config", (req, res) => {
   const { intradayDrop, weekDrop, monthDrop, peMax } = req.body;
 
   matchingConfig.intradayDrop = intradayDrop;
@@ -33,13 +34,16 @@ app.post('/api/matching-config', async (req, res) => {
   matchingConfig.monthDrop = monthDrop;
   matchingConfig.peMax = peMax;
 
-  console.log('⚡ Matching config updated:', matchingConfig);
+  console.log("⚡ Matching config updated:", matchingConfig);
 
-  // 🔥 RECALCUL IMMEDIAT
-  await fetchAndUpdateData();
+  // 🔥 RECALCUL LOCAL INSTANTANÉ
+  recalculateAllScores();
   broadcast(wss);
 
-  res.json({ message: 'Configuration updated & broadcasted', matchingConfig });
+  res.json({
+    message: "Config updated & scores recalculated",
+    matchingConfig
+  });
 });
 
 
