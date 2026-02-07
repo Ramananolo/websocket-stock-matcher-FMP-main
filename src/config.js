@@ -8,5 +8,5 @@ export const cfg = {
   VOLUME_MIN      : Number(process.env.VOLUME_MIN),
   PRICE_MIN       : Number(process.env.PRICE_MIN),
   PE_MAX          : Number(process.env.PE_MAX),
-  POLL_INTERVAL   : Number(process.env.POLL_INTERVAL) || 60000,
+  POLL_INTERVAL   : Number(process.env.POLL_INTERVAL),
 };
